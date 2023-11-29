@@ -1,77 +1,85 @@
-"use client"
+'use client'
 
-import { Player } from "@remotion/player"
-import type { NextPage } from "next"
-import React, { useMemo, useState } from "react"
-import { Main } from "../../remotion/MyComp/Main"
+import { Player } from '@remotion/player'
+import type { NextPage } from 'next'
+import React, { useMemo, useState } from 'react'
 import {
-  CompositionProps,
-  defaultMyCompProps,
+  defaultImageCompProps,
   DURATION_IN_FRAMES,
+  imageCompSchema,
+  NEW_VIDEO_HEIGHT,
+  NEW_VIDEO_WIDTH,
   VIDEO_FPS,
-  VIDEO_HEIGHT,
-  VIDEO_WIDTH,
-} from "../../types/constants"
-import { z } from "zod"
-import { Select, Option, Input, Box } from '@mui/joy'
-
-
-const container: React.CSSProperties = {
-  maxWidth: 768,
-  margin: "auto",
-  marginBottom: 20,
-};
+} from '../../types/constants'
+import { z } from 'zod'
+import { ImageComp } from '../../remotion/NewComp/Image/ImageComp'
+import { RenderImageControls } from '../../components/RenderImageControls'
+import '../../styles/global.css'
 
 const outer: React.CSSProperties = {
-  borderRadius: "var(--geist-border-radius)",
-  overflow: "hidden",
-  boxShadow: "0 0 200px rgba(0, 0, 0, 0.15)",
-  marginBottom: 40,
-  marginTop: 60,
-};
+  overflow: 'hidden',
+  maxHeight: '80vh',
+  width: '65%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+}
 
 const player: React.CSSProperties = {
-  width: "100%",
-};
+  width: '100%',
+}
 
-const Home: NextPage = () => {
-  const [text, setText] = useState<string>(defaultMyCompProps.title);
+const control: React.CSSProperties = {
+  width: '80%',
+  padding: '10px',
+}
 
-  const inputProps: z.infer<typeof CompositionProps> = useMemo(() => {
+const Image: NextPage = () => {
+  const [text, setText] = useState<string>(defaultImageCompProps.titleTexts)
+  const [color, setColor] = useState(defaultImageCompProps.titleColor)
+  const [pageHeading, setPageHeading] = useState(
+    defaultImageCompProps.pageHeading
+  )
+
+  const inputProps: z.infer<typeof imageCompSchema> = useMemo(() => {
     return {
-      title: text,
-    };
-  }, [text]);
+      titleTexts: text,
+      titleColor: color,
+      pageHeading: pageHeading,
+    }
+  }, [text, color, pageHeading])
 
   return (
     <div>
-      <div style={container}>
-        <div className="cinematics" style={outer}>
+      <h1 style={{ textAlign: 'center' }}>{pageHeading}</h1>
+      <div className='container'>
+        <div style={outer}>
           <Player
-            component={Main}
+            component={ImageComp}
             inputProps={inputProps}
             durationInFrames={DURATION_IN_FRAMES}
             fps={VIDEO_FPS}
-            compositionHeight={VIDEO_HEIGHT}
-            compositionWidth={VIDEO_WIDTH}
+            compositionHeight={NEW_VIDEO_HEIGHT}
+            compositionWidth={NEW_VIDEO_WIDTH}
             style={player}
             controls
-            autoPlay
-            loop
           />
         </div>
-        <Box sx={{ p: 2}}>
-        <Select>
-          <Option><Input placeholder='Add Text Color'/></Option>
-          </Select>
-        </Box>
-        <Box sx={{ p: 2 }}>
-          <Input placeholder='Add Title Text'/>
-        </Box>
-       
+        <div style={control}>
+          <RenderImageControls
+            text={text}
+            setText={setText}
+            inputProps={inputProps}
+            color={color}
+            setColor={setColor}
+            pageHeading={pageHeading}
+            setPageHeading={setPageHeading}
+          />
+        </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Image

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { useCallback, useMemo, useState } from 'react'
-import { getProgress, renderVideo } from '../lambda/api'
-import { CompositionProps } from '../types/constants'
+import { getProgress, renderNewVideo } from '../lambda/api'
+import { videoCompSchema } from '../types/constants'
 
 export type State =
   | {
@@ -35,9 +35,9 @@ const wait = async (milliSeconds: number) => {
   })
 }
 
-export const useRendering = (
+export const useVideoRendering = (
   id: string,
-  inputProps: z.infer<typeof CompositionProps>
+  inputProps: z.infer<typeof videoCompSchema>
 ) => {
   const [state, setState] = useState<State>({
     status: 'init',
@@ -48,7 +48,7 @@ export const useRendering = (
       status: 'invoking',
     })
     try {
-      const { renderId, bucketName } = await renderVideo({ id, inputProps })
+      const { renderId, bucketName } = await renderNewVideo({ id, inputProps })
       setState({
         status: 'rendering',
         progress: 0,

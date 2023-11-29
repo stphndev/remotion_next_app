@@ -1,13 +1,29 @@
-import React from 'react'
-import { Audio, staticFile } from 'remotion'
+import { useVideoConfig } from 'remotion'
+import { z } from 'zod'
+import { Text } from './Text'
+import { TopImage } from './TopImage'
+import { imageCompSchema } from '../../../types/constants'
 
-export const AudioPlayer: React.FC = () => {
+export const ImageComp: React.FC<z.infer<typeof imageCompSchema>> = ({
+  titleTexts,
+  titleColor,
+}) => {
+  const { width, height } = useVideoConfig()
+
   return (
-    <Audio
-      src={staticFile('news_update.mp3')}
-      volume={1.0}
-      startFrom={0}
-      endAt={810}
-    />
+    <div
+      style={{
+        gap: '40px',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: width,
+        height: height,
+        background: 'yellow',
+      }}
+    >
+      <TopImage />
+      <Text titleTexts={titleTexts} titleColor={titleColor} />
+    </div>
   )
 }
